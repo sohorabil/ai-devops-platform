@@ -1,0 +1,190 @@
+{
+  "__inputs": [],
+  "__requires": [],
+  "annotations": { "list": [] },
+  "description": "AI DevOps Platform — webhook traffic, error rates, latency, and SOP generation",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2, "fillOpacity": 10 },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "id": 1,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "expr": "rate(webhook_requests_total[5m])",
+          "legendFormat": "{{event_type}} / {{status}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Webhook Request Rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "fixedColor": "#F2495C", "mode": "fixed" },
+          "custom": { "lineWidth": 2, "fillOpacity": 15 },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "id": 2,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "expr": "rate(webhook_requests_total{status=\"error\"}[5m])",
+          "legendFormat": "errors / {{event_type}}",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(webhook_requests_total{status=\"rejected\"}[5m])",
+          "legendFormat": "rejected (bad signature)",
+          "refId": "B"
+        }
+      ],
+      "title": "Webhook Error Rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "fixedColor": "#73BF69", "mode": "fixed" },
+          "custom": { "lineWidth": 2, "fillOpacity": 10 },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "id": 3,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, rate(webhook_duration_seconds_bucket[5m]))",
+          "legendFormat": "p95 {{event_type}}",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.50, rate(webhook_duration_seconds_bucket[5m]))",
+          "legendFormat": "p50 {{event_type}}",
+          "refId": "B"
+        }
+      ],
+      "title": "Webhook Latency (p50 / p95)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "fixedColor": "#5794F2", "mode": "fixed" },
+          "custom": { "lineWidth": 2, "fillOpacity": 10 },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "id": 4,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "expr": "increase(sop_generated_total[24h])",
+          "legendFormat": "SOPs — {{category}}",
+          "refId": "A"
+        },
+        {
+          "expr": "increase(pr_reviews_total[24h])",
+          "legendFormat": "PR reviews — passed={{passed}}",
+          "refId": "B"
+        }
+      ],
+      "title": "SOPs Generated + PR Reviews (24h)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": { "unit": "bytes", "color": { "mode": "palette-classic" } },
+        "overrides": []
+      },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 16 },
+      "id": 5,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "expr": "process_resident_memory_bytes",
+          "legendFormat": "RSS memory",
+          "refId": "A"
+        },
+        {
+          "expr": "process_heap_bytes",
+          "legendFormat": "Heap total",
+          "refId": "B"
+        }
+      ],
+      "title": "Node.js Memory",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": { "unit": "s", "color": { "fixedColor": "#FF9830", "mode": "fixed" } },
+        "overrides": []
+      },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 16 },
+      "id": 6,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "expr": "nodejs_eventloop_lag_seconds",
+          "legendFormat": "Event loop lag",
+          "refId": "A"
+        }
+      ],
+      "title": "Node.js Event Loop Lag",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "tags": ["devops", "ai", "platform"],
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "AI DevOps Platform",
+  "uid": "ai-devops-platform-v1",
+  "version": 1
+}

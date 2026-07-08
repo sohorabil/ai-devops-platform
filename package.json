@@ -1,0 +1,55 @@
+{
+  "name": "ai-devops-platform",
+  "version": "0.1.0",
+  "description": "Production-grade AI-powered DevOps platform with automated SOP generation via Claude",
+  "author": "tk <tukrimsalman@gmail.com>",
+  "license": "UNLICENSED",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "build:watch": "tsc -p tsconfig.build.json --watch",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "webhook": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "mcp": "tsx src/infrastructure/mcp/server.ts",
+    "audit:deps": "audit-ci --moderate",
+    "audit:deps:json": "npm audit --json",
+    "ci": "npm run typecheck && npm run lint && npm run format:check && npm run test",
+    "monitoring:up": "docker compose up -d",
+    "monitoring:down": "docker compose down"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "@vitest/coverage-v8": "^4.1.9",
+    "audit-ci": "^7.1.0",
+    "eslint": "^9.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "prettier": "^3.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.8.0",
+    "vitest": "^4.1.9"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.107.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "dotenv": "^17.4.2",
+    "pino": "^10.3.1",
+    "prom-client": "^15.1.3",
+    "zod": "^4.4.3"
+  }
+}
